@@ -76,41 +76,50 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
     @Override
     public void printDeque() {
         for (var x = sentinel.next; x != sentinel; x = x.next) {
-            System.out.print(x.next == sentinel ? x.element + "\n" : x.element + " ");
+            System.out.print(x.element + (x.next == sentinel ? "\n" : " "));
         }
     }
 
     @Override
     public T get(int index) {
+        if (index >= size) {
+            return  null;
+        }
         var ptr = sentinel.next;
         int i = 0;
-        while (i < index && ptr != sentinel) {
+        while (i < index) {
             i++;
             ptr = ptr.next;
         }
-        return ptr == sentinel ? null : ptr.element;
+        return ptr.element;
     }
 
     @Override
     public T removeLast() {
-        var last = sentinel.prev;
-        T lastElement = last.element;
-        sentinel.prev = last.prev;
-        last.prev.next = sentinel;
-        last = null;
-        size--;
-        return lastElement;
+        if (size > 0) {
+            var last = sentinel.prev;
+            T lastElement = last.element;
+            sentinel.prev = last.prev;
+            last.prev.next = sentinel;
+            size--;
+            return lastElement;
+        } else {
+            return null;
+        }
     }
 
     @Override
     public T removeFirst() {
-        var first = sentinel.next;
-        T firstElement = first.element;
-        sentinel.next = first.next;
-        first.next.prev = sentinel;
-        first = null;
-        size--;
-        return firstElement;
+        if (size > 0) {
+            var first = sentinel.next;
+            T firstElement = first.element;
+            sentinel.next = first.next;
+            first.next.prev = sentinel;
+            size--;
+            return firstElement;
+        } else  {
+            return null;
+        }
     }
     
     public T getRecursive(int index) {
@@ -122,7 +131,22 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
         return new DequeIterator();
     }
 
-//    public static void main(String[] args) {
-//        LinkedListDeque
-//    }
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof LinkedListDeque) {
+            LinkedListDeque<T> x = (LinkedListDeque<T>) o;
+            if (size() == x.size()) {
+                for (int i = 0; i < size(); i++) {
+                    if (!x.get(i).equals(get(i))) {
+                        return false;
+                    }
+                }
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
 }
